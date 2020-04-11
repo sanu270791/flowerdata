@@ -1,0 +1,219 @@
+Jupyter Notebook
+ALL CLASSIFICATIONS
+Last Checkpoint: 02/03/2020
+(autosaved)
+Current Kernel Logo
+Python 3 
+File
+Edit
+View
+Insert
+Cell
+Kernel
+Widgets
+Help
+
+​
+#hello world, Classification, Iris Flowers Prediction
+​
+#prepare problems
+​
+#load Libraries
+from pandas import read_csv
+from pandas.plotting import scatter_matrix
+from matplotlib import pyplot
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+​
+#load dataset
+filename = 'iris1.csv'
+names = ['sepal-length', 'sepal-width', ' petal-length',' petal-width', ' class']
+dataset = read_csv(filename, names=names)
+#summarize data
+#descriptive statistics
+#shape
+print(dataset.shape)
+(150, 5)
+#descriptions
+print(dataset.describe())
+       sepal-length  sepal-width   petal-length   petal-width
+count    150.000000   150.000000     150.000000    150.000000
+mean       5.843333     3.054000       3.758667      1.198667
+std        0.828066     0.433594       1.764420      0.763161
+min        4.300000     2.000000       1.000000      0.100000
+25%        5.100000     2.800000       1.600000      0.300000
+50%        5.800000     3.000000       4.350000      1.300000
+75%        6.400000     3.300000       5.100000      1.800000
+max        7.900000     4.400000       6.900000      2.500000
+#head
+print(dataset.head(20))
+    sepal-length  sepal-width   petal-length   petal-width        class
+0            5.1          3.5            1.4           0.2  Iris-setosa
+1            4.9          3.0            1.4           0.2  Iris-setosa
+2            4.7          3.2            1.3           0.2  Iris-setosa
+3            4.6          3.1            1.5           0.2  Iris-setosa
+4            5.0          3.6            1.4           0.2  Iris-setosa
+5            5.4          3.9            1.7           0.4  Iris-setosa
+6            4.6          3.4            1.4           0.3  Iris-setosa
+7            5.0          3.4            1.5           0.2  Iris-setosa
+8            4.4          2.9            1.4           0.2  Iris-setosa
+9            4.9          3.1            1.5           0.1  Iris-setosa
+10           5.4          3.7            1.5           0.2  Iris-setosa
+11           4.8          3.4            1.6           0.2  Iris-setosa
+12           4.8          3.0            1.4           0.1  Iris-setosa
+13           4.3          3.0            1.1           0.1  Iris-setosa
+14           5.8          4.0            1.2           0.2  Iris-setosa
+15           5.7          4.4            1.5           0.4  Iris-setosa
+16           5.4          3.9            1.3           0.4  Iris-setosa
+17           5.1          3.5            1.4           0.3  Iris-setosa
+18           5.7          3.8            1.7           0.3  Iris-setosa
+19           5.1          3.8            1.5           0.3  Iris-setosa
+'
+# distribution
+print(dataset.groupby(' class').size())
+​
+ class
+Iris-setosa        50
+Iris-versicolor    50
+Iris-virginica     50
+dtype: int64
+#data Visualisation
+#box and whisker plots
+dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
+pyplot.show()
+
+#histograms
+dataset.hist()
+pyplot.show()
+
+#scatter plot matrix
+scatter_matrix(dataset)
+pyplot.show()
+
+#Prepare data
+#split out validation dataset
+array = dataset.values
+X= array[:,0:4]
+Y= array[:,4]
+validation_size = 0.20
+seed = 7
+X_train, X_validation, Y_train, Y_validation = train_test_split(X,Y, test_size=validation_size, random_state=seed)
+#spot check algorithms
+models = []
+models.append(('LR', LogisticRegression()))
+models.append(('LDA', LinearDiscriminantAnalysis()))
+models.append(('KNN', KNeighborsClassifier()))
+models.append(('CART',DecisionTreeClassifier()))
+models.append(('NB', GaussianNB()))
+models.append(('SVM', SVC()))
+#evaluate each model in turn
+results = []
+names = []
+for name, model in models:
+    kfold = KFold(n_splits=10, random_state=seed)
+    cv_results = cross_val_score(model, X_train, Y_train, cv = kfold, scoring='accuracy')
+    results.append(cv_results)
+    names.append(name)
+    msg = "%s : %f (%f)" %(name, cv_results.mean(), cv_results.std())
+print(msg)
+SVM : 0.991667 (0.025000)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+  FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\linear_model\logistic.py:469: FutureWarning: Default multi_class will be changed to 'auto' in 0.22. Specify the multi_class option to silence this warning.
+  "this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+C:\Users\SHASHWAT KUMAR SINGH\Anaconda3\lib\site-packages\sklearn\svm\base.py:193: FutureWarning: The default value of gamma will change from 'auto' to 'scale' in version 0.22 to account better for unscaled features. Set gamma explicitly to 'auto' or 'scale' to avoid this warning.
+  "avoid this warning.", FutureWarning)
+#compare algorithms
+fig = pyplot.figure()
+fig.suptitle('Algorithm comparison')
+ax =  fig.add_subplot(111)
+pyplot.boxplot(results)
+ax.set_xticklabels(names)
+pyplot.show()
+
+# make predictions on validatioon dataset
+knn = KNeighborsClassifier()
+knn.fit(X_train, Y_train)
+predictions = knn.predict(X_validation)
+print(accuracy_score(Y_validation, predictions))
+print(confusion_matrix(Y_validation, predictions))
+print(classification_report(Y_validation, predictions))
+0.9
+[[ 7  0  0]
+ [ 0 11  1]
+ [ 0  2  9]]
+                 precision    recall  f1-score   support
+
+    Iris-setosa       1.00      1.00      1.00         7
+Iris-versicolor       0.85      0.92      0.88        12
+ Iris-virginica       0.90      0.82      0.86        11
+
+       accuracy                           0.90        30
+      macro avg       0.92      0.91      0.91        30
+   weighted avg       0.90      0.90      0.90        30
+
+​
